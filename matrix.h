@@ -8,4 +8,6 @@ void read_matrix(int* mat, int n, int m);
 
 void print_matrix(int* mat, int n, int m);
 
+void copy_mat(int* mat, int* mat_aux, int n, int m);
+
 #endif

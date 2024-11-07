@@ -32,8 +32,19 @@ void copy_mat(int* mat, int* mat_aux, int n, int m) {
 }
 
 int is_solution(int* mat, int n, int m, tree_t* tree) {
-    int *mat_aux;
-    copy_mat(mat_aux, mat, n, m);
+    int *mat_aux = init_matrix(n, m);
+    copy_mat(mat_aux, mat, n, m); // faz uma copia da matriz a ser analisada
 
+    // percorre a matriz para gerar sua sucessora
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            // Gerar comparacoes para todos os vizinhos
+            int numAlive = 0;
+            if (mat_aux)    
+            
+        }
+    }
+
+    free(mat_aux);
     
 }
