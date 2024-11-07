@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-tree_t* create_tree(){
+tree_t* create_tree() {
     tree_t* new_tree = malloc(sizeof(tree_t));
     new_tree->head = NULL;
     
