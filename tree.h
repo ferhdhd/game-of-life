@@ -1,15 +1,17 @@
 #ifndef TREE_H
 #define TREE_H
 
-struct tree {
-    nodo_t* head;
-};
-typedef struct tree tree_t;
+typedef struct tree {
+    node_t* head;
+} tree_t;
 
-struct nodo {
+typedef struct node {
     int* mat;
-    nodo* next;
-};
-typedef struct nodo nodo_t;
+    int num_child;
+    node* prev;
+    node** next_nodes;
+} node_t;
 
+
+node_t* create_node();
 #endif
