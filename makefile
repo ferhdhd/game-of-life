@@ -1,6 +1,6 @@
 flags = -Wall -g
 name = main
-objects = matrix.o main.o
+objects = tree.o matrix.o main.o
 
 all: $(name)
 
@@ -12,6 +12,10 @@ main.o: main.c
 
 matrix.o: matrix.c matrix.h
 	gcc -c matrix.c matrix.h $(flags)
+
+tree.o: tree.c tree.h
+	gcc -c tree.c tree.h $(flags)
+
 run:
 	./main
 

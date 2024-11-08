@@ -12,6 +12,7 @@ tree_t* create_tree() {
 
 node_t* create_node(int* matrix, tree_t* tree, node_t* prev, int b) {
     node_t* new_node = malloc(sizeof(node_t));
+    new_node->next_nodes = malloc(sizeof(node_t) * b);
 
     if (tree->head == NULL) {
         tree->head = new_node;
@@ -22,7 +23,6 @@ node_t* create_node(int* matrix, tree_t* tree, node_t* prev, int b) {
     }
     new_node->num_child = 0;
     new_node->mat = matrix;
-    new_node->next_nodes = malloc(sizeof(node_t) * b);
 
     return new_node;
 }
