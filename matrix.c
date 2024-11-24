@@ -110,6 +110,7 @@ int is_solution(int* mat, int n, int m, tree_t* tree) {
     }
 
     print_matrix(mat_aux, n, m);
-    return compare_matrix(mat_aux, tree->head->mat, n, m);
+    int comp = compare_matrix(mat_aux, tree->head->mat, n, m);
     free(mat_aux);
+    return comp;
 }
