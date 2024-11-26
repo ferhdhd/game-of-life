@@ -47,7 +47,7 @@ int compare_matrix(int* mat, int* mat_aux, int n, int m) {
 int is_solution(int* mat, int n, int m, tree_t* tree) {
     int *mat_aux = init_matrix(n, m);
     copy_mat(mat, mat_aux, n, m); // faz uma copia da matriz a ser analisada
-    print_matrix(mat, n, m);
+    //print_matrix(mat, n, m);
     // percorre a matriz para gerar sua sucessora
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -109,8 +109,9 @@ int is_solution(int* mat, int n, int m, tree_t* tree) {
         }
     }
 
-    print_matrix(mat_aux, n, m);
+    //print_matrix(mat_aux, n, m);
     int comp = compare_matrix(mat_aux, tree->head->mat, n, m);
+    //printf("comp:%d\n" , comp);
     free(mat_aux);
     return comp;
 }
