@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 tree_t* create_tree() {
     tree_t* new_tree = malloc(sizeof(tree_t));
     new_tree->head = NULL;
@@ -115,4 +116,61 @@ int iterative_deepening (int max_depth, int* mat, int n, int m) {
         free_tree(tree);
     }
     return 0;
+}
+
+int count_alive_cells(int* mat, int n, int m) {
+    int count = 0;
+    for (int i = 0; i < n * m; i++) {
+        if (mat[i] == 1) count++;
+    }
+    return count;
+}
+
+node_t* select_best_child(node_t* node, tree_t* tree) {
+    int min_alive = __INT_MAX__;
+    node_t* best_child = NULL;
+
+    for (int i = 0; i < node->num_child; i++) {
+        node_t* child = node->next_nodes[i];
+        if (child != node->prev) { 
+            int alive_cells = count_alive_cells(child->mat, child->n, child->m);
+            if (alive_cells < min_alive) {
+                min_alive = alive_cells;
+                best_child = child;
+            }
+        }
+    }
+
+    return best_child;
+}
+
+int greedy_search(tree_t* tree, node_t* node) {
+    while (1) {
+        if (is_solution(node->mat, node->n, node->m, tree)) {
+            printf("Solução encontrada:\n");
+            print_matrix(node->mat, node->n, node->m);
+            return 1;
+        }
+
+        expand(node, tree);
+
+        node_t* best_child = select_best_child(node, tree); 
+
+        if (!best_child) {
+            printf("Nenhum filho válido encontrado.\n");
+            return 0;
+        }
+
+        node = best_child; 
+    }
+
+    return 0;
+}
+
+int greedy_algorithm(int* mat, int n, int m) {
+    tree_t* tree = create_tree();
+    node_t* root_node = create_node(mat, tree, NULL, n, m);
+    tree->head = root_node;
+
+    return greedy_search(tree, root_node);  
 }

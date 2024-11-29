@@ -16,7 +16,8 @@ int main() {
     
     read_matrix(mat, n, m);
 
-    iterative_deepening(DEEPENING_LIMIT, mat, n, m);
+    greedy_algorithm(mat, n, m);
+    // iterative_deepening(DEEPENING_LIMIT, mat, n, m);
 
     free(mat);
     

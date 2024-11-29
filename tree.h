@@ -27,4 +27,12 @@ int dfs_limited(tree_t* tree, node_t* node, int depth, int limit);
 
 int iterative_deepening (int max_depth, int* mat, int n, int m);
 
+int count_alive_cells(int* mat, int n, int m);
+
+node_t* select_best_child(node_t* node, tree_t* tree);
+
+int greedy_search(tree_t* tree, node_t* node);
+
+int greedy_algorithm(int* mat, int n, int m);
+
 #endif
