@@ -46,9 +46,23 @@ void insert_queue (node_t* node, q_t* q) {
 
 node_t* pop_queue (q_t* q) {
     node_t* aux = q->head->node;
+    q_node_t* aux_q = q->head->next;
     free(q->head);
 
-    q->head = q->head->next;
+    q->head = aux_q;
 
     return aux;
+}
+
+void print_queue (q_t* q) {
+    q_node_t* current = q->head;
+    int i = 1;
+
+    do {
+        printf("num fila: %d\n" , i);
+        printf("qtd vivos: %d\n" , current->cell_alive);
+        print_matrix(current->node->mat, current->node->n, current->node->m);
+        i++;
+        current = current->next;
+    } while (current != NULL);
 }

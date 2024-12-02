@@ -144,6 +144,7 @@ node_t* select_best_child(node_t* node, tree_t* tree) {
 
 int greedy_search(tree_t* tree, node_t* node, q_t* queue) {
     while (1) {
+    //for (int i = 0; i < 2; i++) {
         if (is_solution(node->mat, node->n, node->m, tree)) {
             printf("Solução encontrada:\n");
             print_matrix(node->mat, node->n, node->m);
@@ -151,6 +152,7 @@ int greedy_search(tree_t* tree, node_t* node, q_t* queue) {
         }
 
         expand(node, tree, queue);
+        print_queue(queue);
         node_t* best_child = pop_queue(queue);
         printf("chega\n");    
 

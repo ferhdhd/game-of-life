@@ -25,5 +25,7 @@ node_t* pop_queue (q_t* q);
 
 void remove_queue (node_t* node);
 
+void print_queue (q_t* q);
+
 
 #endif
