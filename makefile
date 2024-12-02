@@ -1,6 +1,6 @@
 flags = -Wall -g
 name = main
-objects = tree.o matrix.o main.o
+objects = queue.o tree.o matrix.o main.o 
 
 all: $(name)
 
@@ -15,6 +15,9 @@ matrix.o: matrix.c matrix.h
 
 tree.o: tree.c tree.h
 	gcc -c tree.c tree.h $(flags)
+
+queue.o: queue.c queue.h
+	gcc -c queue.c queue.h $(flags)
 
 run:
 	./main

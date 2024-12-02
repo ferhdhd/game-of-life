@@ -1,6 +1,7 @@
 #ifndef TREE_H
 #define TREE_H
 
+#include "queue.h"
 
 typedef struct node {
     int* mat;
@@ -31,7 +32,7 @@ int count_alive_cells(int* mat, int n, int m);
 
 node_t* select_best_child(node_t* node, tree_t* tree);
 
-int greedy_search(tree_t* tree, node_t* node);
+int greedy_search(tree_t* tree, node_t* node, q_t* queue);
 
 int greedy_algorithm(int* mat, int n, int m);
 

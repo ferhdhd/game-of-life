@@ -1,5 +1,5 @@
-#include "tree.h"
 #include "matrix.h"
+#include "tree.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -64,17 +64,15 @@ void flip_num(int* mat, int i) {
         mat[i] = 0;
 }
 
-void expand(node_t* node, tree_t* tree) {
-    //printf("CHEGA AQUI\n");
+void expand(node_t* node, tree_t* tree, q_t* queue) {
     for (int i = 0; i < node->num_child; i++) {
-        //printf("num_child: %d\n e i:%d", node->num_child, i);
         node->next_nodes[i] = create_node(node->mat, tree, node, node->n, node->m);
         flip_num(node->next_nodes[i]->mat, i);
-        //print_matrix(node->next_nodes[i]->mat, node->n, node->m);
+        insert_queue(node->next_nodes[i], queue);
     }
 }
 
-int dfs_limited(tree_t* tree, node_t* node, int depth, int limit) {
+/*int dfs_limited(tree_t* tree, node_t* node, int depth, int limit) {
     //printf("CHEGA DFS\n");
 
     if (depth > limit)
@@ -116,7 +114,7 @@ int iterative_deepening (int max_depth, int* mat, int n, int m) {
         free_tree(tree);
     }
     return 0;
-}
+} */
 
 int count_alive_cells(int* mat, int n, int m) {
     int count = 0;
@@ -144,7 +142,7 @@ node_t* select_best_child(node_t* node, tree_t* tree) {
     return best_child;
 }
 
-int greedy_search(tree_t* tree, node_t* node) {
+int greedy_search(tree_t* tree, node_t* node, q_t* queue) {
     while (1) {
         if (is_solution(node->mat, node->n, node->m, tree)) {
             printf("Solução encontrada:\n");
@@ -152,9 +150,9 @@ int greedy_search(tree_t* tree, node_t* node) {
             return 1;
         }
 
-        expand(node, tree);
-
-        node_t* best_child = select_best_child(node, tree); 
+        expand(node, tree, queue);
+        node_t* best_child = pop_queue(queue);
+        printf("chega\n");    
 
         if (!best_child) {
             printf("Nenhum filho válido encontrado.\n");
@@ -170,7 +168,8 @@ int greedy_search(tree_t* tree, node_t* node) {
 int greedy_algorithm(int* mat, int n, int m) {
     tree_t* tree = create_tree();
     node_t* root_node = create_node(mat, tree, NULL, n, m);
+    q_t* queue = init_queue();
     tree->head = root_node;
 
-    return greedy_search(tree, root_node);  
+    return greedy_search(tree, root_node, queue);  
 }
