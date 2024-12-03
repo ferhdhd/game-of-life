@@ -15,4 +15,6 @@ int compare_matrix(int* mat, int* mat_aux, int n, int m);
 
 int is_solution(int* mat, int n, int m, tree_t* tree);
 
+int count_n_alive(int* mat, int i, int j, int n, int m);
+
 #endif

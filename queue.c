@@ -12,23 +12,22 @@ q_t* init_queue () {
     return q;
 }
 
-q_node_t* create_q_node (node_t* node) {
+q_node_t* create_q_node (node_t* node, int* mat_og) {
     q_node_t* q_node = malloc(sizeof(q_node_t));
 
     q_node->next = NULL;
     q_node->node = node;
-    q_node->cell_alive = count_alive_cells(node->mat, node->n, node->m);
+    q_node->cell_alive = h(mat_og, node->mat, node->n, node->m);
 
     return q_node;
 }
 
-void insert_queue (node_t* node, q_t* q) {
-    q_node_t* new_node = create_q_node(node);
+void insert_queue (node_t* node, q_t* q, int* mat_og) {
+    q_node_t* new_node = create_q_node(node, mat_og);
 
     if (q->head == NULL || q->head->cell_alive >= new_node->cell_alive) {
         new_node->next = q->head;
         q->head = new_node;
-        print_matrix(node->mat, node->n, node->m);
         return;
     }   
 
@@ -39,7 +38,6 @@ void insert_queue (node_t* node, q_t* q) {
         current = current->next;
     }
 
-    print_matrix(node->mat, node->n, node->m);
     new_node->next = current->next;
     current->next = new_node;
 }

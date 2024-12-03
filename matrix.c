@@ -115,3 +115,55 @@ int is_solution(int* mat, int n, int m, tree_t* tree) {
     free(mat_aux);
     return comp;
 }
+
+int count_n_alive(int* mat, int i, int j, int n, int m) {
+    int numAlive = 0;
+    // vizinho da esquerda
+    if ((j-1) >= 0) {
+        if (mat[i*m + (j-1)] == 1) {
+            numAlive++;
+        }
+    }
+    // vizinho da diagonal esquerda de cima
+    if ((j-1) >= 0 && (i-1) >= 0) {
+        if (mat[(i-1)*m + (j-1)] == 1) {
+            numAlive++;
+        }
+    }
+    // vizinho da diagonal esquerda de baixo
+    if ((j-1) >= 0 && (i+1) < n) {
+        if (mat[(i+1)*m + (j-1)] == 1) {
+            numAlive++;
+        }
+    }
+    // vizinho de cima 
+    if ((i-1) >= 0) {
+        if (mat[(i-1)*m + j]) {
+            numAlive++;
+        }
+    }
+    // vizinho de baixo
+    if ((i+1) < n) {
+        if (mat[(i+1)*m + j]){
+            numAlive++;
+        }
+    }
+    // vizinho da direita
+    if ((j+1) < m) {
+        if (mat[i*m + (j+1)]){
+            numAlive++;
+        }
+    }
+    //vizinho da diagonal direita de cima
+    if ((j+1) < m && (i-1) > 0) {
+        if (mat[(i-1)*m + (j+1)]) {
+            numAlive++;
+        }
+    }
+    // vizinho da diagonal direita de baixo
+    if ((j+1) < m && (i+1) < n)
+        if (mat[(i+1)*m + (j+1)]){
+            numAlive++;
+        }
+    return numAlive;
+}

@@ -68,7 +68,7 @@ void expand(node_t* node, tree_t* tree, q_t* queue) {
     for (int i = 0; i < node->num_child; i++) {
         node->next_nodes[i] = create_node(node->mat, tree, node, node->n, node->m);
         flip_num(node->next_nodes[i]->mat, i);
-        insert_queue(node->next_nodes[i], queue);
+        insert_queue(node->next_nodes[i], queue, tree->head->mat);
     }
 }
 
@@ -142,9 +142,33 @@ node_t* select_best_child(node_t* node, tree_t* tree) {
     return best_child;
 }
 
+int h(int* mat_og, int* new_mat, int n, int m) {
+    int cont = 0;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++) {
+            int numAlive = count_n_alive(new_mat, i, j, n, m);
+            if (mat_og[(i*m) + j] == 1) {
+                if (new_mat[(i*m) + j] == 0 && numAlive != 3)
+                    cont+= 3;
+                else if (new_mat[(i*m) + j] == 1 && (numAlive == 2 || numAlive == 3))
+                    cont++;
+                else if (new_mat[(i*m) + j] == 1 && numAlive < 2 && numAlive > 3)
+                    cont += 3;
+            } else {
+                if (new_mat[(i*m) + j] == 0)
+                    if (numAlive == 3)
+                        cont+=3 ;
+            }
+        }
+    return cont;
+}
+
 int greedy_search(tree_t* tree, node_t* node, q_t* queue) {
-    while (1) {
-    //for (int i = 0; i < 2; i++) {
+    //while (1) {
+    for (int i = 0; i < 3; i++) {
+        printf("NODO ATUAL\n");
+        print_matrix(node->mat, node->n, node->m);
+        printf("\n");
         if (is_solution(node->mat, node->n, node->m, tree)) {
             printf("Solução encontrada:\n");
             print_matrix(node->mat, node->n, node->m);
@@ -154,7 +178,6 @@ int greedy_search(tree_t* tree, node_t* node, q_t* queue) {
         expand(node, tree, queue);
         print_queue(queue);
         node_t* best_child = pop_queue(queue);
-        printf("chega\n");    
 
         if (!best_child) {
             printf("Nenhum filho válido encontrado.\n");

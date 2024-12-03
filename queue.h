@@ -4,6 +4,9 @@
 struct node;
 typedef struct node node_t;
 
+struct tree;
+typedef struct tree tree_t;
+
 typedef struct q_node {
     struct q_node* next;
     struct q_node* prev;
@@ -17,9 +20,9 @@ typedef struct q {
 
 q_t* init_queue ();
 
-q_node_t* create_q_node (node_t* node);
+q_node_t* create_q_node (node_t* node, int* mat_og);
 
-void insert_queue (node_t* node, q_t* q);
+void insert_queue (node_t* node, q_t* q, int* mat_og);
 
 node_t* pop_queue (q_t* q);
 
