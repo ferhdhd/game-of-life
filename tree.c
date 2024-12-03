@@ -64,11 +64,11 @@ void flip_num(int* mat, int i) {
         mat[i] = 0;
 }
 
-void expand(node_t* node, tree_t* tree, q_t* queue) {
+void expand(node_t* node, tree_t* tree, q_t* queue, q_t* mat_visited) {
     for (int i = 0; i < node->num_child; i++) {
         node->next_nodes[i] = create_node(node->mat, tree, node, node->n, node->m);
         flip_num(node->next_nodes[i]->mat, i);
-        insert_queue(node->next_nodes[i], queue, tree->head->mat);
+        insert_queue(node->next_nodes[i], queue, mat_visited, tree->head->mat);
     }
 }
 
@@ -147,37 +147,45 @@ int h(int* mat_og, int* new_mat, int n, int m) {
     for (int i = 0; i < n; i++)
         for (int j = 0; j < m; j++) {
             int numAlive = count_n_alive(new_mat, i, j, n, m);
-            if (mat_og[(i*m) + j] == 1) {
-                if (new_mat[(i*m) + j] == 0 && numAlive != 3)
-                    cont+= 3;
-                else if (new_mat[(i*m) + j] == 1 && (numAlive == 2 || numAlive == 3))
-                    cont++;
-                else if (new_mat[(i*m) + j] == 1 && numAlive < 2 && numAlive > 3)
+            if (mat_og[(i*m) + j] == 1) { // caso onde a celula original eh viva
+                if (new_mat[(i*m) + j] == 0 && numAlive != 3) // caso onde a anterior eh morta e não tem 3 vizinhos vivos (muito penalizada)
+                    cont+= 4;
+                else if (new_mat[(i*m) + j] == 1 && (numAlive == 2 || numAlive == 3)) // anterior eh viva e tem 2 ou 3 vizinhos vivos (pouco penalizada)
                     cont += 3;
-            } else {
-                if (new_mat[(i*m) + j] == 0)
-                    if (numAlive == 3)
-                        cont+=3 ;
+                else if (new_mat[(i*m) + j] == 1 && (numAlive != 2 || numAlive != 3)) // anterior eh viva e tem menos de 2 vizinhos vivos ou mais de 3
+                    cont += 4;                                                        // (pouco penalizado)
+            } else { // caso onde celula original e morta
+                if (new_mat[(i*m) + j] == 0) { // anterior e morta
+                    if (numAlive == 3) // possui 3 vizinhos vivos (muito penalisado)
+                        cont+= 4;
+                } else { // anterior eh viva
+                    if (numAlive == 2 || numAlive == 3) // possui 2 ou 3 vizinhos vivos (muito penalizado)
+                        cont+= 4;
+                    else if (numAlive != 2 || numAlive != 3) // possui menos de 2 ou mais de 3 vizinhos vivos (pouco penalisado)
+                        cont+= 3;
+                }
             }
         }
     return cont;
 }
 
-int greedy_search(tree_t* tree, node_t* node, q_t* queue) {
+int greedy_search(tree_t* tree, node_t* node, q_t* queue, q_t* mat_visited) {
     //while (1) {
-    for (int i = 0; i < 3; i++) {
-        printf("NODO ATUAL\n");
-        print_matrix(node->mat, node->n, node->m);
-        printf("\n");
+    for (int i = 0; i < 10000; i++) {
+        //printf("NODO ATUAL\n");
+        //print_matrix(node->mat, node->n, node->m);
+        //printf("\n");
+        printf("Iteracao: %d\n" , i);
         if (is_solution(node->mat, node->n, node->m, tree)) {
+            printf("Iteracao: %d\n" , i);
             printf("Solução encontrada:\n");
             print_matrix(node->mat, node->n, node->m);
             return 1;
         }
 
-        expand(node, tree, queue);
-        print_queue(queue);
-        node_t* best_child = pop_queue(queue);
+        expand(node, tree, queue, mat_visited);
+        //print_queue(queue);
+        node_t* best_child = pop_queue(queue, mat_visited);
 
         if (!best_child) {
             printf("Nenhum filho válido encontrado.\n");
@@ -194,7 +202,8 @@ int greedy_algorithm(int* mat, int n, int m) {
     tree_t* tree = create_tree();
     node_t* root_node = create_node(mat, tree, NULL, n, m);
     q_t* queue = init_queue();
+    q_t* mat_visited = init_queue();
     tree->head = root_node;
 
-    return greedy_search(tree, root_node, queue);  
+    return greedy_search(tree, root_node, queue, mat_visited);  
 }

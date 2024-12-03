@@ -22,9 +22,11 @@ q_t* init_queue ();
 
 q_node_t* create_q_node (node_t* node, int* mat_og);
 
-void insert_queue (node_t* node, q_t* q, int* mat_og);
+int already_visited(q_t* q, q_node_t* new_node);
 
-node_t* pop_queue (q_t* q);
+void insert_queue (node_t* node, q_t* q, q_t* already_visited, int* mat_og);
+
+node_t* pop_queue (q_t* q, q_t* mat_visited);
 
 void remove_queue (node_t* node);
 

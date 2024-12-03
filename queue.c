@@ -22,10 +22,34 @@ q_node_t* create_q_node (node_t* node, int* mat_og) {
     return q_node;
 }
 
-void insert_queue (node_t* node, q_t* q, int* mat_og) {
+int already_visited(q_t* q, q_node_t* new_node) {
+    if (q == NULL || q->head == NULL)
+        return 0;
+    
+    q_node_t* curr = q->head;
+
+    while (curr != NULL) {
+        if (compare_matrix(curr->node->mat, new_node->node->mat, curr->node->n, curr->node->m)) {
+            //printf("ja foi explorado!\n");
+            //print_matrix(new_node->node->mat, new_node->node->n, new_node->node->m);
+            return 1;
+        }
+        curr = curr->next;
+    }
+
+    return 0;
+}
+
+void insert_queue (node_t* node, q_t* q, q_t* mat_visited, int* mat_og) {
     q_node_t* new_node = create_q_node(node, mat_og);
 
-    if (q->head == NULL || q->head->cell_alive >= new_node->cell_alive) {
+    if (already_visited(mat_visited, new_node) || already_visited(q, new_node)) {
+        free(new_node);
+
+        return;
+    }
+    
+    if (q->head == NULL || q->head->cell_alive > new_node->cell_alive) {
         new_node->next = q->head;
         q->head = new_node;
         return;
@@ -33,8 +57,8 @@ void insert_queue (node_t* node, q_t* q, int* mat_og) {
 
     q_node_t* current = q->head;
     while (current->next != NULL && current->next->cell_alive < new_node->cell_alive) {
-        if (compare_matrix(node->mat, current->node->mat, node->n, node->m)) // nodo repetido
-            return;
+        //if (compare_matrix(node->mat, current->node->mat, node->n, node->m)) // nodo repetido
+            //return;
         current = current->next;
     }
 
@@ -42,17 +66,23 @@ void insert_queue (node_t* node, q_t* q, int* mat_og) {
     current->next = new_node;
 }
 
-node_t* pop_queue (q_t* q) {
+node_t* pop_queue (q_t* q, q_t* mat_visited) {
+    insert_queue(q->head->node, mat_visited, NULL, q->head->node->mat);
+    
     node_t* aux = q->head->node;
-    q_node_t* aux_q = q->head->next;
-    free(q->head);
+    q_node_t* head_next = q->head->next;
 
-    q->head = aux_q;
+    free(q->head);
+    q->head = head_next;
 
     return aux;
 }
 
 void print_queue (q_t* q) {
+    
+    if (q->head == NULL)
+        return;
+
     q_node_t* current = q->head;
     int i = 1;
 
