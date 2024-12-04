@@ -1,29 +1,20 @@
-flags = -Wall -g
-name = main
-objects = queue.o tree.o matrix.o main.o 
+CXX = g++
+CXXFLAGS = -std=c++17
+LDFLAGS = -lz3
 
-all: $(name)
+TARGET = game_of_life
+SOURCES = game_of_life.cpp csp_functions.cpp
+OBJECTS = $(SOURCES:.cpp=.o)
 
-$(name): $(objects)
-	gcc -o $(name) $(objects) $(flags)
+all: $(TARGET)
 
-main.o: main.c
-	gcc -c main.c $(flags)
+$(TARGET): $(OBJECTS)
+	$(CXX) $(OBJECTS) -o $@ $(LDFLAGS)
 
-matrix.o: matrix.c matrix.h
-	gcc -c matrix.c matrix.h $(flags)
-
-tree.o: tree.c tree.h
-	gcc -c tree.c tree.h $(flags)
-
-queue.o: queue.c queue.h
-	gcc -c queue.c queue.h $(flags)
-
-run:
-	./main
+%.o: %.cpp csp_functions.hpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f *~ *.o *gch
+	rm -f $(OBJECTS) $(TARGET)
 
-purge: clean
-	rm -f $(name)
+.PHONY: all clean
