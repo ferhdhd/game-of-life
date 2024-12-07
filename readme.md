@@ -1,67 +1,54 @@
-# Formulação Matemática do Problema
+# Z3 e SMT
 
-Seja uma matriz de tamanho \( n \times m \), onde cada célula pode assumir valores binários \( \{0, 1\} \). Modelamos o problema utilizando as seguintes variáveis e funções:
+O Z3 é um solver SMT (Satisfiability Modulo Theories) usado para resolver problemas lógicos envolvendo restrições em diferentes teorias, como aritmética, álgebra booleana e arrays. Ele combina técnicas de satisfatibilidade proposicional (SAT) com métodos específicos para cada teoria, permitindo encontrar soluções eficientes para problemas complexos.
 
-- \( \text{Mat}_{\text{OG}}[i, j] \): Estado da célula \( (i, j) \) na matriz original.
-- \( \text{GameMatrix}[i, j] \): Estado da célula \( (i, j) \) na matriz futura (a ser calculada).
-- \( \text{NumAlive}(\text{GameMatrix}, i, j) \): Número de vizinhos vivos da célula \( (i, j) \) na matriz futura.
+No contexto deste projeto, o Z3 é usado para modelar uma matriz onde cada célula é uma variável com possíveis estados (0 ou 1). Restrições baseadas em vizinhança e regras de transição são aplicadas, enquanto uma função de otimização minimiza o número de células vivas na próxima configuração. Isso demonstra a capacidade do Z3 de lidar com restrições e critérios de otimização de forma integrada.
+
+# Formulação do Problema
+
+Seja uma matriz `n x m`, onde cada célula pode assumir valores `0` ou `1`. As restrições e o objetivo são definidos com base no seguinte:
 
 ---
 
 ## Restrições
 
-Para cada célula \( (i, j) \), definimos as seguintes regras baseadas nos estados \( \text{Mat}_{\text{OG}} \) e \( \text{GameMatrix} \):
+1. **Para células vivas na matriz original (`Mat_OG[i, j] = 1`):**
+   - A célula permanece viva (`GameMatrix[i, j] = 1`) se:
+     - Ela estava viva anteriormente **e** o número de vizinhos vivos é igual a `2` ou `3`, ou:
+     - Ela estava morta anteriormente **e** o número de vizinhos vivos é exatamente `3`.
 
-1. **Células vivas na matriz original (\( \text{Mat}_{\text{OG}}[i, j] = 1 \))**:
-   - A célula permanece viva (\( \text{GameMatrix}[i, j] = 1 \)) se e somente se:
-     - Ela estava viva anteriormente **e** tem \( 2 \) ou \( 3 \) vizinhos vivos, ou:
-     - Ela estava morta anteriormente e tem exatamente \( 3 \) vizinhos vivos.
-   - Formalmente:
-     \[
-     \text{Mat}_{\text{OG}}[i, j] = 1 \implies 
-     \left(
-         (\text{GameMatrix}[i, j] = 1 \land (\text{NumAlive}(\text{GameMatrix}, i, j) = 2 \lor \text{NumAlive}(\text{GameMatrix}, i, j) = 3)) 
-         \lor (\text{GameMatrix}[i, j] = 0 \land \text{NumAlive}(\text{GameMatrix}, i, j) = 3)
-     \right)
-     \]
+   Formalmente:
+    Mat_OG[i, j] = 1 => (GameMatrix[i, j] = 1 AND (NumAlive[i, j] = 2 OR NumAlive[i, j] = 3)) OR (GameMatrix[i, j] = 0 AND NumAlive[i, j] = 3)
 
-2. **Células mortas na matriz original (\( \text{Mat}_{\text{OG}}[i, j] = 0 \))**:
-   - A célula permanece morta (\( \text{GameMatrix}[i, j] = 0 \)) se:
-     - Ela estava morta anteriormente e não tem exatamente \( 3 \) vizinhos vivos, ou:
-     - Ela estava viva anteriormente, mas não tem \( 2 \) ou \( 3 \) vizinhos vivos.
-   - Formalmente:
-     \[
-     \text{Mat}_{\text{OG}}[i, j] = 0 \implies 
-     \left(
-         (\text{GameMatrix}[i, j] = 0 \land \text{NumAlive}(\text{GameMatrix}, i, j) \neq 3) 
-         \lor (\text{GameMatrix}[i, j] = 1 \land \text{NumAlive}(\text{GameMatrix}, i, j) \notin \{2, 3\})
-     \right)
-     \]
 
----
+2. **Para células mortas na matriz original (`Mat_OG[i, j] = 0`):**
+- A célula permanece morta (`GameMatrix[i, j] = 0`) se:
+  - Ela estava morta anteriormente **e** o número de vizinhos vivos é diferente de `3`, ou:
+  - Ela estava viva anteriormente **e** o número de vizinhos vivos não é `2` ou `3`.
 
-## Domínio das Variáveis
+Formalmente:
+Mat_OG[i, j] = 0 => (GameMatrix[i, j] = 0 AND NumAlive[i, j] != 3) OR (GameMatrix[i, j] = 1 AND NumAlive[i, j] != 2 AND NumAlive[i, j] != 3)
 
-As variáveis \( \text{GameMatrix}[i, j] \) são definidas como variáveis binárias:
-\[
-\text{GameMatrix}[i, j] \in \{0, 1\}, \quad \forall i \in \{1, \dots, n\}, \, j \in \{1, \dots, m\}
-\]
 
----
+3. **Domínio das variáveis:**
+Cada célula na matriz futura (`GameMatrix[i, j]`) assume valores binários:
 
-## Restrição de Borda
+GameMatrix[i, j] ∈ {0, 1}, para todo i, j
 
-As regras acima são aplicadas apenas às células \( (i, j) \) onde:
-\[
-1 \leq i \leq n-1 \quad \text{e} \quad 1 \leq j \leq m-1
-\]
-As células da borda podem ser tratadas como casos especiais ou ignoradas.
 
 ---
 
 ## Função Objetivo
 
-Minimizar o número total de células vivas na matriz futura:
-\[
-\text{Minimizar } \sum_{i=1}^{n} \sum_{j=1}^{m} \text{GameMatrix}[i, j]
-\]
+Minimizar o número total de células vivas na próxima matriz (`GameMatrix`):
+
+Minimizar Σ GameMatrix[i, j], para todo i, j
+
+
+---
+
+## Observações
+
+- `NumAlive[i, j]`: Número de vizinhos vivos ao redor da célula `(i, j)`.
+- As restrições são aplicadas apenas às células internas da matriz (`1 ≤ i ≤ n-1` e `1 ≤ j ≤ m-1`). As células da borda podem ser ignoradas ou tratadas separadamente.
+
