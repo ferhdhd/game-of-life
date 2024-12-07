@@ -97,6 +97,7 @@ void add_objective(z3::optimize& solver, z3::context& c, const z3::expr_vector& 
 
 // Função para imprimir a solução
 void print_solution(const z3::model& mod, const z3::expr_vector& vars, int n, int m) {
+    std::cout << "N: " << n << " M: " << m << std::endl;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
             std::cout << mod.eval(vars[i * m + j]) << " ";
