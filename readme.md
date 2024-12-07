@@ -1,8 +1,15 @@
-# Z3 e SMT
 
-O Z3 é um solver SMT (Satisfiability Modulo Theories) usado para resolver problemas lógicos envolvendo restrições em diferentes teorias, como aritmética, álgebra booleana e arrays. Ele combina técnicas de satisfatibilidade proposicional (SAT) com métodos específicos para cada teoria, permitindo encontrar soluções eficientes para problemas complexos.
+# Contexto
+
+Para resolver o problema foi usado Z3 que é um solver SMT (Satisfiability Modulo Theories). Ele combina técnicas de satisfatibilidade proposicional (SAT) com métodos específicos para cada teoria
 
 No contexto deste projeto, o Z3 é usado para modelar uma matriz onde cada célula é uma variável com possíveis estados (0 ou 1). Restrições baseadas em vizinhança e regras de transição são aplicadas, enquanto uma função de otimização minimiza o número de células vivas na próxima configuração. Isso demonstra a capacidade do Z3 de lidar com restrições e critérios de otimização de forma integrada.
+
+# Utilização Z3
+
+Para instalação e configuração, basta rodar o seguinte comando:
+
+`sudo apt-get install z3`
 
 # Formulação do Problema
 
@@ -26,8 +33,8 @@ Seja uma matriz `n x m`, onde cada célula pode assumir valores `0` ou `1`. As r
   - Ela estava morta anteriormente **e** o número de vizinhos vivos é diferente de `3`, ou:
   - Ela estava viva anteriormente **e** o número de vizinhos vivos não é `2` ou `3`.
 
-Formalmente:
-Mat_OG[i, j] = 0 => (GameMatrix[i, j] = 0 AND NumAlive[i, j] != 3) OR (GameMatrix[i, j] = 1 AND NumAlive[i, j] != 2 AND NumAlive[i, j] != 3)
+    Formalmente:
+    Mat_OG[i, j] = 0 => (GameMatrix[i, j] = 0 AND NumAlive[i, j] != 3) OR (GameMatrix[i, j] = 1 AND NumAlive[i, j] != 2 AND NumAlive[i, j] != 3)
 
 
 3. **Domínio das variáveis:**
@@ -50,5 +57,5 @@ Minimizar Σ GameMatrix[i, j], para todo i, j
 ## Observações
 
 - `NumAlive[i, j]`: Número de vizinhos vivos ao redor da célula `(i, j)`.
-- As restrições são aplicadas apenas às células internas da matriz (`1 ≤ i ≤ n-1` e `1 ≤ j ≤ m-1`). As células da borda podem ser ignoradas ou tratadas separadamente.
+- As restrições são aplicadas apenas às células internas da matriz (`1 ≤ i ≤ n-1` e `1 ≤ j ≤ m-1`). As células da borda são ignoradas.
 
