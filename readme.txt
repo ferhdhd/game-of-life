@@ -1,3 +1,6 @@
+Trabalho - IA
+Pedro Willian Aguiar - GRR20211766
+Fernando Gbur dos Santos - GRR20211761
 
 # Contexto
 
@@ -8,6 +11,10 @@ No contexto deste projeto, o Z3 é usado para modelar uma matriz onde cada célu
 # Utilização Z3
 
 Para instalação e configuração, basta rodar o seguinte comando:
+
+`sudo apt-get install libz3-dev`
+
+ou 
 
 `sudo apt-get install z3`
 
@@ -49,7 +56,7 @@ GameMatrix[i, j] ∈ {0, 1}, para todo i, j
 
 Minimizar o número total de células vivas na próxima matriz (`GameMatrix`):
 
-Minimizar Σ GameMatrix[i, j], para todo i, j
+Minimizar Σ GameMatrix[i, j], para todo i, j (ou seja, minimizar o somatório das células vivas)
 
 
 ---
