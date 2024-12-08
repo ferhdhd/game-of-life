@@ -43,7 +43,7 @@ std::vector<int> read_matrix(int n, int m) {
 
 // Função para imprimir a matriz
 void print_matrix(const std::vector<int>& mat, int n, int m) {
-    std::cout << "N: " << n << " M: " << m << std::endl;
+    std::cout << n << m << std::endl;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
             std::cout << mat[(i * m) + j] << " ";
@@ -72,8 +72,9 @@ void add_domain_constraints(z3::optimize& solver, const z3::expr_vector& vars, i
 
 // Função para adicionar restrições ao solver
 void add_restrictions(z3::optimize& solver, z3::context& c, const z3::expr_vector& vars, const std::vector<int>& mat_og, int n, int m) {
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < m; j++) {
+    // Adicionando as restrições sem contar a borda
+    for (int i = 1; i < n-1; i++)
+        for (int j = 1; j < m-1; j++) {
             z3::expr num_alive = alive_neighbors(c, vars, i, j, n, m);
             
             solver.add(z3::implies(c.int_val(mat_og[(i * m) + j]) == 1, 
